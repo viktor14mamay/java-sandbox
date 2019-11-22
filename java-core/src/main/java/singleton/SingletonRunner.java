@@ -23,21 +23,18 @@ public class SingletonRunner {
         }
         Thread.sleep(100);
 
-        // construct new singleton with Clone
         IncorectSingleton incorectSingleton = IncorectSingleton.getInstance();
         System.out.println("Initial: " + incorectSingleton.hashCode());
+
+        // construct new singleton with Clone
         IncorectSingleton clonedIncorrectSingleton = incorectSingleton.clone();
         System.out.println("Cloned: " + clonedIncorrectSingleton.hashCode());
 
         // construct new singleton with Serializable
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(
-                new FileOutputStream("singleton.txt"))) {
+                new FileOutputStream("singleton.txt")); ObjectInputStream in = new ObjectInputStream(new FileInputStream("singleton.txt"))) {
             objectOutputStream.writeObject(incorectSingleton);
-        }
-
-        IncorectSingleton serializedSingleton;
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("singleton.txt"));) {
-            serializedSingleton = (IncorectSingleton) in.readObject();
+            IncorectSingleton serializedSingleton = (IncorectSingleton) in.readObject();
             System.out.println("Serialized: " + serializedSingleton.hashCode());
         }
 
